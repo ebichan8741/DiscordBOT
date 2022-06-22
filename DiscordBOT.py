@@ -1,5 +1,6 @@
 from discord.ext import commands
 import discord
+import config
 
 client = commands.Bot(command_prefix = '/', help_command=None)
 
@@ -243,5 +244,5 @@ async def info(ctx):
         await ctx.send(embed=mbed)
 
 
-token = 'OTg4MTE5OTIxNDcwODc3NzU3.G1Nz2W.-IXxqGeEWk3YIYTqPfjuYfuaEbMQsF6mOe4yf4'
+token = config.DISCORD_TOKEN
 client.run(token)
