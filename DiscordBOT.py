@@ -2,25 +2,17 @@ import discord
 from discord.ext import commands
 import interactions
 import requests
-#import discord_slash
 #import asyncio
 import os
 #import keep_alive
 from dotenv import load_dotenv
 
 # 接続に必要なオブジェクトを生成
-#disable_syncをTrueにすることでslash commandの自動登録を無効にすることが出来ます。
-#頻繁に再起動するときやslash comanndの変更が必要ない時にはTrueにしてください
-#inter = interactions.Client(token=os.environ['TOKEN'], disable_sync=False)
-intents = discord.Intents.default()
+intents = discord.Intents.all()
+intents.message_content = True
 intents.members = True
 client = discord.Client(intents=intents)
 bot = commands.Bot(command_prefix='/', help_command=None, intents=intents)
-
-#lp = asyncio.get_event_loop()
-#lp.create_task(bot.start(os.environ['TOKEN']))  #discord.pyを起動
-#lp.create_task(inter._ready())  #interactions.pyを起動
-#lp.run_forever()
 
 
 @bot.event
@@ -533,6 +525,35 @@ async def info(ctx):
     else:
         mbed = discord.Embed(title='Error', description='このコマンドはDMでは使えないよ')
         await ctx.send(embed=mbed)
+
+class CreateButton(discord.ui.View):
+    def __init__(self, txt:str):
+        super().__init__()
+
+        self.add_item(Button(txt))
+            
+
+class CreateButtons(discord.ui.View):
+    def __init__(self, args):
+        super().__init__()
+
+        for txt in args:
+            self.add_item(Button(txt))
+
+class Button(discord.ui.Button):
+    def __init__(self, txt:str):
+        super().__init__(label=txt, style=discord.ButtonStyle.primary)
+
+    async def callback(self, interaction: discord.Interaction):
+        await interaction.response.send_message(f'{interaction.user.display_name}は{self.label}を押しました')
+
+@bot.command()
+async def makeButton(ctx: commands.context, *args):
+    await ctx.send('Press!', view=CreateButtons(args))
+
+@bot.command()
+async def setbutton(ctx):
+    await ctx.send('ボタンを作成しました', view=CreateButton('ボタン'))
 
 
 load_dotenv()
