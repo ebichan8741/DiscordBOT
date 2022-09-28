@@ -5,7 +5,8 @@ import requests
 #import discord_slash
 #import asyncio
 import os
-import keep_alive
+#import keep_alive
+from dotenv import load_dotenv
 
 # 接続に必要なオブジェクトを生成
 #disable_syncをTrueにすることでslash commandの自動登録を無効にすることが出来ます。
@@ -534,10 +535,7 @@ async def info(ctx):
         await ctx.send(embed=mbed)
 
 
-# Botの起動とDiscordサーバーへの接続
-keep_alive.keep_alive()
-my_secret = os.environ['TOKEN']
-try:
-    bot.run(my_secret)
-except:
-    os.system("kill 1")
+load_dotenv()
+# Botの起動
+DISCORD_BOT_TOKEN = os.getenv('DISCORD_TOKEN')
+bot.run(DISCORD_BOT_TOKEN)
